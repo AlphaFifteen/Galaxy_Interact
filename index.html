@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Inter Galactico🌎🛸</title>
+<style>
+  :root {
+    --bg: #050510;
+    --panel: #0d0d1a;
+    --neon: #00ff88;
+    --neon2: #00d4ff;
+    --danger: #ff3366;
+    --text: #e0e0e0;
+  }
+  
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Courier New', monospace;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  
+  nav {
+    background: var(--panel);
+    padding: 1rem;
+    border-bottom: 2px solid var(--neon);
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+  }
+  
+  nav button {
+    background: none;
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.3s;
+  }
+  
+  nav button:hover, nav button.active {
+    background: var(--neon);
+    color: var(--bg);
+    box-shadow: 0 0 15px var(--neon);
+  }
+  
+  .page {
+    display: none;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .page.active { display: block; }
+  
+  h1 {
+    color: var(--neon);
+    text-align: center;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px var(--neon);
+  }
+  
+  /* Radar Page */
+  .radar-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 2rem auto;
+    border: 2px solid var(--neon);
+    border-radius: 50%;
+    background: radial-gradient(circle, #001122 0%, #000 70%);
+    overflow: hidden;
+  }
+  
+  .radar-sweep {
+    position: absolute;
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon));
+    top: 50%;
+    left: 50%;
+    transform-origin: 0 50%;
+    animation: sweep 3s linear infinite;
+    opacity: 0;
+  }
+  
+  .radar-sweep.active { opacity: 1; }
+  
+  @keyframes sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .blip {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--danger);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--danger);
+    opacity: 0;
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  
+  .scan-btn {
+    display: block;
+    margin: 2rem auto;
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    background: var(--panel);
+    border: 2px solid var(--neon2);
+    color: var(--neon2);
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.3s;
+  }
+  
+  .scan-btn:hover {
+    background: var(--neon2);
+    color: var(--bg);
+    box-shadow: 0 0 20px var(--neon2);
+  }
+  
+  .scan-result {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    min-height: 40px;
+  }
+  
+  /* Detection Page */
+  .detector-box {
+    background: var(--panel);
+    padding: 2rem;
+    border: 1px solid var(--neon);
+    border-radius: 8px;
+  }
+  
+  textarea, input {
+    width: 100%;
+    padding: 1rem;
+    background: #000;
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    font-family: inherit;
+    margin: 1rem 0;
+  }
+  
+  .detect-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--neon);
+    color: var(--bg);
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.1rem;
+  }
+  
+  .result-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px dashed var(--neon2);
+    min-height: 80px;
+  }
+  
+  .prob-bar {
+    width: 100%;
+    height: 20px;
+    background: #222;
+    margin: 1rem 0;
+  }
+  
+  .prob-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon), var(--danger));
+    width: 0%;
+    transition: width 1.5s ease;
+  }
+  
+  /* Chat Game Page */
+  .chat-container {
+    background: var(--panel);
+    border: 1px solid var(--neon);
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  
+  .message {
+    margin: 0.5rem 0;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+  }
+  
+  .message.user {
+    background: #003322;
+    margin-left: 20%;
+    text-align: right;
+  }
+  
+  .message.alien {
+    background: #001122;
+    margin-right: 20%;
+    border-left: 2px solid var(--neon2);
+  }
+  
+  .planet-select {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid var(--neon);
+  }
+  
+  .planet-select select, .planet-select input {
+    flex: 1;
+    margin: 0;
+  }
+  
+  .send-btn {
+    padding: 1rem;
+    background: var(--neon2);
+    color: var(--bg);
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .planet-info {
+    background: #001122;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--neon2);
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-btn active" data-page="radar">Radar Scan👽</button>
+  <button class="nav-btn" data-page="detector">Alien Detector‼️</button>
+  <button class="nav-btn" data-page="chat">Chat with Aliens😎👽</button>
+</nav>
+
+<!-- Page 1: Radar, this is the skelton of the alien scanind radar, it's all bogus btw , don't freakout😂-->
+<div id="radar" class="page active">
+  <h1>📡 Planetary Radar Scanner</h1>
+  <p style="text-align:center;">Click scan to check for UFO signatures in orbit</p>
+  
+  <div class="radar-container">
+    <div class="radar-sweep" id="sweep"></div>
+    <div id="blips"></div>
+  </div>
+  
+  <button class="scan-btn" id="scanBtn">INITIATE SCAN✅</button>
+  <div class="scan-result" id="scanResult"></div>
+</div>
+
+<!-- Page 2: Detector -->
+<div id="detector" class="page">
+  <h1>👽Alien Detector</h1>
+  <div class="detector-box">
+    <p>Describe your suspected alien encounter to analyze:</p>
+    <textarea id="inputText" rows="4" placeholder="e.g. 'I saw flashing lights moving weird in the sky last night...'"></textarea>
+    <button class="detect-btn" id="detectBtn">ANALYZE FOR ALIEN ACTIVITY</button>
+    
+    <div class="result-box">
+      <div id="detectResult">Awaiting scan...</div>
+      <div class="prob-bar"><div class="prob-fill" id="probFill"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Page 3: Chat Game -->
+<div id="chat" class="page">
+  <h1>💬 Intergalactic Chat</h1>
+  <div class="planet-info" id="planetInfo">
+    Select a planet to start chatting with its resident alien!
+  </div>
+  
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="planet-select">
+      <select id="planetSelect">
+        <option value="">Choose Planet</option>
+        <option value="mars">Mars</option>
+        <option value="jupiter">Jupiter</option>
+        <option value="titan">Titan</option>
+        <option value="Neptune">Neptune</option>
+      </select>
+      <input type="text" id="chatInput" placeholder="Ask: 'Where are you from?' or 'How's the weather?'">
+      <button class="send-btn" id="sendBtn">SEND</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Navigation
+const navBtns = document.querySelectorAll('.nav-btn');
+const pages = document.querySelectorAll('.page');
+
+navBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    navBtns.forEach(b => b.classList.remove('active'));
+    pages.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.page).classList.add('active');
+  });
+});
+
+// Radar Scan Logic
+const scanBtn = document.getElementById('scanBtn');
+const sweep = document.getElementById('sweep');
+const blips = document.getElementById('blips');
+const scanResult = document.getElementById('scanResult');
+
+scanBtn.addEventListener('click', () => {
+  sweep.classList.add('active');
+  blips.innerHTML = '';
+  scanResult.textContent = 'Scanning...';
+  scanBtn.disabled = true;
+  
+  setTimeout(() => {
+    const found = Math.random() > 0.3;
+    if (found) {
+      for (let i = 0; i < 3; i++) {
+        const blip = document.createElement('div');
+        blip.className = 'blip';
+        blip.style.left = Math.random() * 80 + 10 + '%';
+        blip.style.top = Math.random() * 80 + 10 + '%';
+        blips.appendChild(blip);
+      }
+      scanResult.textContent = '⚠️ ANOMALY DETECTED! Possible UFO signature at 47.3°N, 122.1°W';
+      scanResult.style.color = 'var(--danger)';
+    } else {
+      scanResult.textContent = '✓ Scan complete. No extraterrestrial activity detected.';
+      scanResult.style.color = 'var(--neon)';
+    }
+    sweep.classList.remove('active');
+    scanBtn.disabled = false;
+  }, 3000);
+});
+
+// Alien Detector Logic
+const detectBtn = document.getElementById('detectBtn');
+const inputText = document.getElementById('inputText');
+const detectResult = document.getElementById('detectResult');
+const probFill = document.getElementById('probFill');
+
+detectBtn.addEventListener('click', () => {
+  const text = inputText.value.toLowerCase();
+  let score = Math.random() * 40 + 10;
+  
+  if (/ufo|alien|abduct|lights|probe/i.test(text)) score += 40;
+  if (/space|galaxy|planet/i.test(text)) score += 15;
+  
+  score = Math.min(100, Math.round(score));
+  probFill.style.width = score + '%';
+  
+  let verdict = score > 75 ? 'ALIEN ACTIVITY HIGH' : 
+                score > 50 ? 'SUSPICIOUS PATTERNS DETECTED' : 
+                'PROBABLY JUST A DRONE';
+  
+  detectResult.innerHTML = `<strong>${verdict}</strong><br>Confidence: ${score}%<br>This is 100% for entertainment only.`;
+});
+
+// Chat Game Logic
+const planetData = {
+  mars: {
+    name: "Mars",
+    info: "Mars: 4th planet from the Sun. Cold desert world with thin CO2 atmosphere. Average temp: -60°C. Known for Olympus Mons, the largest volcano in the solar system.",
+    responses: [
+      "Greetings human! I'm from Mars. It's dry here, but the sunsets are blue.",
+      "My planet has 2 moons, Phobos and Deimos. They look scary at night.",
+      "Weather? Dust storms for weeks. Bring a good filter if you visit.",
+      "We're mostly underground now. Radiation is a problem on the surface."
+    ]
+  },
+  jupiter: {
+    name: "Jupiter",
+    info: "Jupiter: Largest planet in the solar system. Gas giant with a massive storm called the Great Red Spot. No solid surface.",
+    responses: [
+      "I'm a Jupiter native! We live in the cloud layers. No walking here.",
+      "The Great Red Spot has been storming for 400 years. Loud!",
+      "I have 95 moons. My favorite is Europa - there's an ocean under the ice.",
+      "Gravity here is 2.5x Earth. You'd be a pancake in 5 seconds."
+    ]
+  },
+  titan: {
+    name: "Titan",
+    info: "Titan: Saturn's largest moon. Only moon with a dense atmosphere and liquid lakes on surface. Lakes are methane/ethane, not water.",
+    responses: [
+      "Titan here! We have lakes, but they're made of methane. Don't drink it.",
+      "It's -180°C here. I wear a thermal suit even indoors.",
+      "The sky is orange. Looks cool for photos.",
+      "Saturn looks huge in our sky. Like a ringed god watching us."
+    ]
+  },
+  Neptune: {
+    name: "Neptune",
+    info: "Neptune:8th planet from the Sun. Ice giant with strong winds and storms. Has a faint ring system and 14 known moons.",
+    responses: [
+      "I'm from Neptune! We're 600 light-years from Earth. Long trip.",
+      "Our sun is smaller and cooler than yours. Days are 290 Earth-days long.",
+      "We think there's a global ocean here. Good for swimming!",
+      "Nobody's visited yet. You're the first human I've talked to."
+    ]
+  }
+};
+
+const planetSelect = document.getElementById('planetSelect');
+const planetInfo = document.getElementById('planetInfo');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+
+let currentPlanet = null;
+
+planetSelect.addEventListener('change', (e) => {
+  currentPlanet = planetData[e.target.value];
+  if (currentPlanet) {
+    planetInfo.textContent = currentPlanet.info;
+    chatMessages.innerHTML = `<div class="message alien">[${currentPlanet.name} Alien]: Hello! Ask me about my planet.</div>`;
+  }
+});
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+function sendMessage() {
+  if (!currentPlanet || !chatInput.value.trim()) return;
+  
+  const userMsg = chatInput.value.trim();
+  chatMessages.innerHTML += `<div class="message user">You: ${userMsg}</div>`;
+  
+  setTimeout(() => {
+    const responses = currentPlanet.responses;
+    const reply = responses[Math.floor(Math.random() * responses.length)];
+    chatMessages.innerHTML += `<div class="message alien">[${currentPlanet.name} Alien]: ${reply}</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }, 800);
+  
+  chatInput.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
